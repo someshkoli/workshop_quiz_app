@@ -2,9 +2,9 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
     authRoutes = require('./routes/auth');
-    questionRoutes = require('./routes/questions');
-    userRoutes = require('./routes/user');
-    mysql = require('mysql2/promise')
+questionRoutes = require('./routes/questions');
+userRoutes = require('./routes/user');
+mysql = require('mysql')
 const app = express();
 
 //=======================
@@ -20,16 +20,15 @@ app.use(logger('dev'));
 //=======================
 
 let mysqluri = "127.0.0.1"
-exports.mysqlcon =mysql.createConnection({
+const mysqlcon = mysql.createConnection({
     host: mysqluri,
-    user:"root",
-    password: "",
-    database : "quiz"
-}).then((conn)=>{
-    console.log("database connected")
-}).catch((err)=>{
-    console.log("databsae not connected err : ",err)
-})
+    user: 'root',
+    password: '',
+    database: 'quiz'
+});
+// console.log(mysqlcon)
+// mysqlcon.connect()
+module.exports=mysqlcon
 //=======================
 // ALLOW-CORS
 //=======================
