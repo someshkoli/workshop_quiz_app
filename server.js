@@ -1,7 +1,9 @@
 const express = require('express'),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
-    // routes = require('./routes/routes');
+    authRoutes = require('./routes/auth');
+    questionRoutes = require('./routes/questions');
+    userRoutes = require('./routes/user');
     mysql = require('mysql2/promise')
 const app = express();
 
@@ -18,13 +20,16 @@ app.use(logger('dev'));
 //=======================
 
 let mysqluri = "127.0.0.1"
-const mysqlcon = mysql.createConnection({
+exports.mysqlcon =mysql.createConnection({
     host: mysqluri,
     user:"root",
     password: "",
     database : "quiz"
+}).then((conn)=>{
+    console.log("database connected")
+}).catch((err)=>{
+    console.log("databsae not connected err : ",err)
 })
-module.exports = mysqlcon;
 //=======================
 // ALLOW-CORS
 //=======================
@@ -36,21 +41,26 @@ app.use(function (req, res, next) {
     next();
 });
 
-//=======================
+// =======================
 // ROUTES
-//=======================
+// =======================
 
-// app.use("/routes/", routes);
+app.use("/auth/", authRoutes);
+app.use("/questions/", questionRoutes);
+app.use("/user/", userRoutes);
 
 // //=======================
 // // STARTING THE SERVER
 // //=======================
 
-// app.get('/', (req, res) => {
-//     res.send('Works')
-// });
+app.get('/', (req, res) => {
+    res.send('Works')
+});
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log('App listening on port ' + port);
 });
+
+//export db module
+// module.exports = mysqlcon;
